@@ -1,7 +1,10 @@
 {
   "name": "wagtail",
   "version": "1.0.0",
-  "repository": "https://github.com/wagtail/wagtail",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wagtail/wagtail.git"
+  },
   "private": true,
   "engines": {
     "node": ">=24"
@@ -61,6 +64,7 @@
     "@storybook/addon-docs": "10.2.4",
     "@storybook/addon-webpack5-compiler-babel": "^4.0.0",
     "@storybook/react-webpack5": "10.2.4",
+    "@tailwindcss/cli": "^4.3.0",
     "@types/autosize": "^4.0.3",
     "@types/draft-js": "^0.10.45",
     "@types/jest": "^29.5.14",
@@ -103,7 +107,7 @@
     "storybook": "10.2.13",
     "storybook-django": "^1.1.0",
     "stylelint": "^15.11.0",
-    "tailwindcss": "^3.4.14",
+    "tailwindcss": "^3.4.19",
     "tailwindcss-vanilla-rtl": "^0.4.0",
     "ts-jest": "^29.4.5",
     "ts-loader": "^9.5.4",
@@ -117,6 +121,7 @@
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
+    "@tailwindcss/oxide": "^4.3.0",
     "@tippyjs/react": "^4.2.6",
     "a11y-dialog": "^8.1.4",
     "autosize": "^6.0.1",
@@ -164,6 +169,20 @@
     "storybook": "storybook dev -c client/storybook -p 6006 --no-open --no-version-updates",
     "build-docs": "typedoc",
     "build-storybook": "storybook build -c client/storybook",
-    "@all": "concurrently --group --passthrough-arguments --prefix-colors auto --timings"
-  }
+    "@all": "concurrently --group --passthrough-arguments --prefix-colors auto --timings",
+    "dev": "tailwindcss -i ./src/input.css -o ./static/css/output.css --watch",
+    "build-tailwinds": "tailwindcss -i ./src/input.css -o ./static/css/output.css --minify"
+  },
+  "description": "<h1 align=\"center\">     <picture>         <source media=\"(prefers-color-scheme: light)\" srcset=\".github/wagtail.svg\">         <source media=\"(prefers-color-scheme: dark)\" srcset=\".github/wagtail-inverse.svg\">         <img width=\"343\" src=\".github/wagtail.svg\" alt=\"Wagtail\">     </picture> </h1> <p align=\"center\">     <br>     <a href=\"https://github.com/wagtail/wagtail/actions\">         <img src=\"https://github.com/wagtail/wagtail/workflows/Wagtail%20CI/badge.svg\" alt=\"Build Status\" />     </a>     <a href=\"https://opensource.org/licenses/BSD-3-Clause\">         <img src=\"https://img.shields.io/badge/license-BSD-blue.svg\" alt=\"License\" />     </a>     <a href=\"https://pypi.python.org/pypi/wagtail/\">         <img src=\"https://img.shields.io/pypi/v/wagtail.svg\" alt=\"Version\" />     </a>     <a href=\"https://pypi.python.org/pypi/wagtail/\">         <img src=\"https://img.shields.io/pypi/dm/wagtail?logo=Downloads\" alt=\"Monthly downloads\" />     </a>     <a href=\"https://fosstodon.org/@wagtail\">         <img src=\"https://img.shields.io/mastodon/follow/109308882653647818?domain=https%3A%2F%2Ffosstodon.org&style=social\" alt=\"Follow @wagtail@fosstodon.org\">     </a> </p>",
+  "bugs": {
+    "url": "https://github.com/wagtail/wagtail/issues"
+  },
+  "homepage": "https://github.com/wagtail/wagtail#readme",
+  "main": "tailwind.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

@@ -49,7 +49,7 @@ Wagtail depends on the default set of Django middleware modules, to cover basic 
 INSTALLED_APPS = [
 
   'myapp',  # your own app
-
+'navigation',
   'wagtail.contrib.forms',
   'wagtail.contrib.redirects',
   'wagtail.embeds',

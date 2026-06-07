@@ -1,0 +1,47 @@
+<footer class="footer">
+    <div class="container">
+        <p>
+            © 2026 {{ settings.navigation.SiteSettings.site_name }}. All rights reserved.
+        </p>
+
+        {% if settings.navigation.SiteSettings.email or settings.navigation.SiteSettings.phone or settings.navigation.SiteSettings.address %}
+            <div class="footer-contact">
+                {% if settings.navigation.SiteSettings.email %}
+                    <a href="mailto:{{ settings.navigation.SiteSettings.email }}">
+                        {{ settings.navigation.SiteSettings.email }}
+                    </a>
+                {% endif %}
+
+                {% if settings.navigation.SiteSettings.phone %}
+                    <a href="tel:{{ settings.navigation.SiteSettings.phone }}">
+                        {{ settings.navigation.SiteSettings.phone }}
+                    </a>
+                {% endif %}
+
+                {% if settings.navigation.SiteSettings.address %}
+                    <p>{{ settings.navigation.SiteSettings.address|linebreaksbr }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if settings.navigation.SiteSettings.instagram or settings.navigation.SiteSettings.tiktok or settings.navigation.SiteSettings.youtube or settings.navigation.SiteSettings.whatsapp %}
+            <div class="footer-social">
+                {% if settings.navigation.SiteSettings.instagram %}
+                    <a href="{{ settings.navigation.SiteSettings.instagram }}">Instagram</a>
+                {% endif %}
+
+                {% if settings.navigation.SiteSettings.tiktok %}
+                    <a href="{{ settings.navigation.SiteSettings.tiktok }}">TikTok</a>
+                {% endif %}
+
+                {% if settings.navigation.SiteSettings.youtube %}
+                    <a href="{{ settings.navigation.SiteSettings.youtube }}">YouTube</a>
+                {% endif %}
+
+                {% if settings.navigation.SiteSettings.whatsapp %}
+                    <a href="{{ settings.navigation.SiteSettings.whatsapp }}">WhatsApp</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</footer>

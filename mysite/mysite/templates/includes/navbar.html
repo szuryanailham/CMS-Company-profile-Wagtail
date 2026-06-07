@@ -1,0 +1,43 @@
+{% load wagtailimages_tags %}
+
+<nav class="navbar">
+    <div class="navbar-container">
+
+        <!-- LOGO DYNAMIC -->
+        <a href="/" class="logo">
+            {% if settings.navigation.SiteSettings.logo %}
+                {% image settings.navigation.SiteSettings.logo max-180x60 %}
+            {% else %}
+                {{ settings.navigation.SiteSettings.site_name }}
+            {% endif %}
+        </a>
+
+        <!-- MENU -->
+        <ul class="nav-links">
+
+            {% for item in menu_items %}
+                <li>
+
+                    <a href="{{ item.get_link }}">
+                        {{ item.title }}
+                    </a>
+
+                    {% if item.children.all %}
+                        <ul class="dropdown">
+                            {% for child in item.children.all %}
+                                <li>
+                                    <a href="{{ child.get_link }}">
+                                        {{ child.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                </li>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+</nav>

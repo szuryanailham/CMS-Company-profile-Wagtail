@@ -1,9 +1,9 @@
 {% load wagtailimages_tags %}
 
-<nav class="navbar">
+<nav class="navbar" x-data="{ open: false }">
     <div class="navbar-container">
 
-        <!-- LOGO DYNAMIC -->
+        <!-- LOGO -->
         <a href="/" class="logo">
             {% if settings.navigation.SiteSettings.logo %}
                 {% image settings.navigation.SiteSettings.logo max-180x60 %}
@@ -12,12 +12,22 @@
             {% endif %}
         </a>
 
-        <!-- MENU -->
-        <ul class="nav-links">
+        <!-- HAMBURGER -->
+        <button
+            class="menu-toggle"
+            @click="open = !open"
+            type="button"
+        >
+            ☰
+        </button>
 
+        <!-- MENU -->
+        <ul
+            class="nav-links"
+            :class="{ 'active': open }"
+        >
             {% for item in menu_items %}
                 <li>
-
                     <a href="{{ item.get_link }}">
                         {{ item.title }}
                     </a>
@@ -33,10 +43,8 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-
                 </li>
             {% endfor %}
-
         </ul>
 
     </div>

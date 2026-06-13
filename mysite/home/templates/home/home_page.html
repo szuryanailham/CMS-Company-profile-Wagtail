@@ -1,94 +1,67 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static wagtailimages_tags %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
-{% load static wagtailimages_tags %}
 
 {% block content %}
 
+<section class="hero">
+    <div class="container hero-wrapper">
 
-{% image page.hero_image fill-1920x900 as hero_img %}
+        <div class="hero-content">
 
-<section
-    class="hero"
-    style="background-image: url('{{ hero_img.url }}');"
->
-    <div class="hero-overlay">
-        <div class="container">
-            <h1>{{ page.hero_title }}</h1>
-            <p>{{ page.hero_subtitle }}</p>
+            {% if page.hero_label %}
+                <span class="hero-label">
+                    {{ page.hero_label }}
+                </span>
+            {% endif %}
 
-            <a href="#latest-posts" class="btn">
-                Read Our Articles
-            </a>
-        </div>
-    </div>
-</section>
+            {% if page.hero_title %}
+                <h1>
+                    {{ page.hero_title }}
+                </h1>
+            {% endif %}
 
-<section class="about">
-    <div class="container">
-        <h2>About Our Blog</h2>
-        <p>
-            We share engineering insights, product updates,
-            company news, and lessons learned from building
-            modern software solutions.
-        </p>
-    </div>
-</section>
-
-<section id="latest-posts" class="latest-posts">
-    <div class="container">
-        <h2>Latest Articles</h2>
-
-        <div class="post-grid">
-
-            <article class="post-card">
-                <h3>Building Scalable APIs with Django</h3>
+            {% if page.hero_subtitle %}
                 <p>
-                    Learn how we design maintainable APIs that
-                    support growing business requirements.
+                    {{ page.hero_subtitle }}
                 </p>
-            </article>
+            {% endif %}
 
-            <article class="post-card">
-                <h3>Why We Chose Wagtail as Our CMS</h3>
-                <p>
-                    Exploring the benefits of using Wagtail
-                    for content-driven applications.
-                </p>
-            </article>
+            <div class="hero-actions">
 
-            <article class="post-card">
-                <h3>Improving Developer Experience</h3>
-                <p>
-                    Tools, workflows, and practices that help
-                    our team ship features efficiently.
-                </p>
-            </article>
+                {% if page.hero_primary_button_text and page.hero_primary_button_url %}
+                    <a
+                        href="{{ page.hero_primary_button_url }}"
+                        class="btn btn-primary"
+                    >
+                        {{ page.hero_primary_button_text }}
+                    </a>
+                {% endif %}
+
+                {% if page.hero_secondary_button_text and page.hero_secondary_button_url %}
+                    <a
+                        href="{{ page.hero_secondary_button_url }}"
+                        class="btn btn-secondary"
+                    >
+                        {{ page.hero_secondary_button_text }}
+                    </a>
+                {% endif %}
+
+            </div>
 
         </div>
-    </div>
-</section>
 
-<section class="newsletter">
-    <div class="container">
-        <h2>Stay Updated</h2>
-        <p>
-            Get the latest articles and company updates delivered
-            directly to your inbox.
-        </p>
+        <div class="hero-image">
 
-        <form>
-            <input
-                type="email"
-                placeholder="Enter your email"
-            >
-            <button type="submit">
-                Subscribe
-            </button>
-        </form>
+            {% if page.hero_image %}
+                {% image page.hero_image fill-1000x800 class="hero-img" alt=page.hero_title %}
+            {% endif %}
+
+        </div>
+
     </div>
 </section>
 

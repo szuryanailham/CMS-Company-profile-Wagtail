@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailimages_tags %}
+{% load static wagtailimages_tags wagtailcore_tags %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
@@ -65,4 +65,535 @@
     </div>
 </section>
 
+
+
+{% with items=page.showcase_items.all %}
+{% if items %}
+<section class="showcase-section">
+    <div class="container">
+
+        <div class="showcase-header">
+            {% if page.showcase_label %}
+                <span class="section-label">{{ page.showcase_label }}</span>
+            {% endif %}
+            {% if page.showcase_title %}
+                <h2 class="showcase-title">{{ page.showcase_title }}</h2>
+            {% endif %}
+            {% if page.showcase_subtitle %}
+                <p class="showcase-subtitle">{{ page.showcase_subtitle }}</p>
+            {% endif %}
+        </div>
+
+        <div class="showcase-layout" x-data="{ active: 0 }">
+
+            <div class="showcase-accordion">
+                {% for item in items %}
+                <div class="accordion-item" :class="{ 'is-active': active === {{ forloop.counter0 }} }">
+                    <button
+                        class="accordion-trigger"
+                        @click="active = {{ forloop.counter0 }}"
+                        :aria-expanded="active === {{ forloop.counter0 }}"
+                    >
+                        <span class="accordion-number">{{ forloop.counter|stringformat:"02d" }}</span>
+                        <span class="accordion-title">{{ item.title }}</span>
+                        <svg class="accordion-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div
+                        class="accordion-content"
+                        x-show="active === {{ forloop.counter0 }}"
+                        x-transition:enter="ac-enter"
+                        x-transition:enter-start="ac-enter-start"
+                        x-transition:enter-end="ac-enter-end"
+                        x-transition:leave="ac-leave"
+                        x-transition:leave-start="ac-leave-start"
+                        x-transition:leave-end="ac-leave-end"
+                        x-cloak
+                    >
+                        <p>{{ item.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="showcase-preview">
+                {% for item in items %}
+                <div
+                    class="showcase-image-wrap"
+                    x-show="active === {{ forloop.counter0 }}"
+                    x-transition:enter="img-fade-enter"
+                    x-transition:enter-start="img-fade-enter-start"
+                    x-transition:enter-end="img-fade-enter-end"
+                    x-transition:leave="img-fade-leave"
+                    x-transition:leave-start="img-fade-leave-start"
+                    x-transition:leave-end="img-fade-leave-end"
+                    x-cloak
+                >
+                    {% if item.image %}
+                        {% image item.image fill-900x700 class="showcase-img" alt=item.image_alt %}
+                    {% else %}
+                        <div class="showcase-img-placeholder showcase-placeholder-{{ forloop.counter0|divisibleby:3 }}"></div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+</section>
+{% endif %}
+{% endwith %}
+
+
+<section class="video-section">
+    <div class="container">
+
+        <div class="video-header">
+
+            {% if page.video_section_label %}
+                <span class="section-label">
+                    {{ page.video_section_label }}
+                </span>
+            {% endif %}
+
+            {% if page.video_section_title %}
+                <h2 class="video-title">
+                    {{ page.video_section_title }}
+                </h2>
+            {% endif %}
+
+            {% if page.video_section_subtitle %}
+                <p class="video-subtitle">
+                    {{ page.video_section_subtitle }}
+                </p>
+            {% endif %}
+
+        </div>
+
+        {% if page.video_embed_url %}
+            <div class="video-wrapper">
+                <div class="video-frame">
+                    <iframe
+                        src="{{ page.video_embed_url }}"
+                        title="{{ page.video_section_title }}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+            </div>
+        {% endif %}
+
+        {% with stats=page.video_stats.all %}
+            {% if stats %}
+                <div class="video-grid">
+                    {% for stat in stats %}
+                        <div class="video-card">
+                            <h3>{{ stat.value }}</h3>
+                            <p>{{ stat.label }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+    </div>
+</section>
+
+{% with logos=page.client_logos.all %}
+<section class="clients-section">
+    <div class="container">
+
+        <div class="clients-header">
+            {% if page.clients_marquee_title %}
+                <h2 class="clients-title">{{ page.clients_marquee_title }}</h2>
+            {% endif %}
+            {% if page.clients_marquee_subtitle %}
+                <p class="clients-subtitle">{{ page.clients_marquee_subtitle }}</p>
+            {% endif %}
+        </div>
+
+        <div class="marquee-divider" aria-hidden="true"></div>
+
+        {% if logos %}
+            <div class="marquee-wrapper" aria-label="Client logos">
+                <div class="marquee-track">
+                    {% for logo in logos %}
+                        <div class="marquee-item">
+                            {% if logo.website_url %}
+                                <a href="{{ logo.website_url }}" target="_blank" rel="noopener noreferrer" title="{{ logo.company_name }}">
+                            {% endif %}
+                            {% if logo.logo %}
+                                {% image logo.logo max-220x100 class="client-logo-img" alt=logo.company_name %}
+                            {% else %}
+                                <span class="client-logo-text">{{ logo.company_name }}</span>
+                            {% endif %}
+                            {% if logo.website_url %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {% for logo in logos %}
+                        <div class="marquee-item" aria-hidden="true">
+                            {% if logo.website_url %}
+                                <a href="{{ logo.website_url }}" target="_blank" rel="noopener noreferrer" tabindex="-1">
+                            {% endif %}
+                            {% if logo.logo %}
+                                {% image logo.logo max-220x100 class="client-logo-img" alt="" %}
+                            {% else %}
+                                <span class="client-logo-text">{{ logo.company_name }}</span>
+                            {% endif %}
+                            {% if logo.website_url %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endwith %}
+
+
+{% with packages=page.service_packages.all %}
+{% if packages %}
+<section class="service-packages">
+    <div class="container">
+
+        <div
+            class="packages-section-header"
+            x-data="{
+                prev() {
+                    const track = this.$refs.track;
+                    const card = track.querySelector('.package-card');
+                    track.scrollBy({ left: -(card.offsetWidth + 24), behavior: 'smooth' });
+                },
+                next() {
+                    const track = this.$refs.track;
+                    const card = track.querySelector('.package-card');
+                    track.scrollBy({ left: card.offsetWidth + 24, behavior: 'smooth' });
+                }
+            }"
+        >
+            <div class="packages-header-text">
+                {% if page.packages_label %}
+                    <span class="section-label">{{ page.packages_label }}</span>
+                {% endif %}
+                {% if page.packages_title %}
+                    <h2 class="packages-title">{{ page.packages_title }}</h2>
+                {% endif %}
+                {% if page.packages_subtitle %}
+                    <p class="packages-subtitle">{{ page.packages_subtitle }}</p>
+                {% endif %}
+            </div>
+
+            <div class="carousel-controls">
+                <button class="carousel-btn" @click="prev()" aria-label="Previous package">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="carousel-btn" @click="next()" aria-label="Next package">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+
+        <div class="packages-slider">
+            <div class="packages-track" x-ref="track">
+
+                {% for pkg in packages %}
+                <article class="package-card{% if pkg.is_popular %} is-popular{% endif %}">
+
+                    {% if pkg.is_popular %}
+                        <div class="package-badge-wrap">
+                            <span class="package-badge">Most Popular</span>
+                        </div>
+                    {% else %}
+                        <div class="package-badge-wrap"></div>
+                    {% endif %}
+
+                    <div class="package-header">
+                        <h3 class="package-name">{{ pkg.name }}</h3>
+                        <div class="package-price">{{ pkg.price }}</div>
+                    </div>
+
+                    <p class="package-description">{{ pkg.description }}</p>
+
+                    {% if pkg.features_list %}
+                        <ul class="package-features">
+                            {% for feature in pkg.features_list %}
+                                <li>{{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if pkg.button_url %}
+                        <a
+                            href="{{ pkg.button_url }}"
+                            class="package-cta {% if pkg.is_popular %}btn btn-primary{% else %}btn btn-secondary{% endif %}"
+                        >
+                            {{ pkg.button_text }}
+                        </a>
+                    {% endif %}
+
+                </article>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endif %}
+{% endwith %}
+
+
+<section class="testimonials-section">
+    <div class="container">
+
+        <div class="testimonials-header">
+            {% if page.testimonials_label %}
+                <span class="section-label">{{ page.testimonials_label }}</span>
+            {% endif %}
+            {% if page.testimonials_title %}
+                <h2 class="testimonials-title">{{ page.testimonials_title }}</h2>
+            {% endif %}
+            {% if page.testimonials_subtitle %}
+                <p class="testimonials-subtitle">{{ page.testimonials_subtitle }}</p>
+            {% endif %}
+        </div>
+
+        {% if featured_testimonials %}
+        <div class="testimonials-grid">
+            {% for t in featured_testimonials %}
+            <article class="testimonial-card testimonial-card--fade">
+
+                <div class="testimonial-quote-icon" aria-hidden="true">
+                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 8C6.69 8 4 10.69 4 14v10h10V14H7c0-1.66 1.34-3 3-3V8zm14 0c-3.31 0-6 2.69-6 6v10h10V14h-7c0-1.66 1.34-3 3-3V8z" fill="currentColor"/>
+                    </svg>
+                </div>
+
+                <p class="testimonial-message">{{ t.message|truncatechars:180 }}</p>
+
+                {% if t.rating %}
+                <div class="testimonial-stars" aria-label="{{ t.rating }} out of 5 stars">
+                    {% for i in "12345" %}
+                    <span class="star {% if forloop.counter <= t.rating %}filled{% endif %}" aria-hidden="true">★</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="testimonial-author-row">
+                    {% if t.profile_photo %}
+                        {% image t.profile_photo fill-80x80 class="testimonial-avatar" alt=t.full_name %}
+                    {% elif t.submitted_photo %}
+                        <img src="{{ t.submitted_photo.url }}" class="testimonial-avatar" alt="{{ t.full_name }}">
+                    {% else %}
+                        <div class="testimonial-avatar-letter" aria-hidden="true">{{ t.avatar_initial }}</div>
+                    {% endif %}
+
+                    <div class="testimonial-author-info">
+                        <strong class="testimonial-name">{{ t.full_name }}</strong>
+                        {% if t.display_position %}
+                        <span class="testimonial-position">{{ t.display_position }}</span>
+                        {% endif %}
+                        {% if t.location %}
+                        <span class="testimonial-location">
+                            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                <path d="M10 2C7.24 2 5 4.24 5 7c0 4.25 5 11 5 11s5-6.75 5-11c0-2.76-2.24-5-5-5zm0 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/>
+                            </svg>
+                            {{ t.location }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </article>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="testimonials-cta">
+            <a href="/testimonials/" class="btn btn-secondary">View All Testimonials</a>
+        </div>
+
+    </div>
+</section>
+
+{% if home_faqs %}
+<section class="home-faq-section">
+    <div class="container">
+
+        <div class="home-faq-header home-faq--fade">
+            <span class="section-label">FAQ</span>
+            <h2 class="home-faq-title">Frequently Asked Questions</h2>
+            <p class="home-faq-subtitle">
+                Find answers to common questions about our services, process, pricing, and support.
+            </p>
+        </div>
+
+        <div class="home-faq-layout home-faq--fade" data-home-faq>
+            <div class="home-faq-list">
+                {% for faq in home_faqs %}
+                <article class="home-faq-item{% if forloop.first %} is-open{% endif %}">
+                    <button
+                        type="button"
+                        class="home-faq-trigger"
+                        aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                    >
+                        <span class="home-faq-question">{{ faq.question }}</span>
+                        <svg class="home-faq-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div class="home-faq-answer">
+                        <div class="home-faq-answer-inner">{{ faq.answer|richtext }}</div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endif %}
+
+
+<section class="cta-section">
+    <div class="container cta-wrapper">
+        <h2 class="cta-title">Let's Build Something Great Together</h2>
+        <p class="cta-subtitle">
+            Ready to grow your business with a professional website, application, or digital solution?
+            Let's discuss your ideas and turn them into reality.
+        </p>
+        {% if settings.navigation.SiteSettings.email %}
+            <a href="mailto:{{ settings.navigation.SiteSettings.email }}" class="btn-cta">
+                Schedule a Discussion
+            </a>
+        {% else %}
+            <a href="#" class="btn-cta">
+                Schedule a Discussion
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Testimonial cards fade-in on scroll
+    (function () {
+        var cards = document.querySelectorAll('.testimonial-card--fade');
+        if (!cards.length) return;
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        cards.forEach(function (card) { observer.observe(card); });
+    })();
+
+    // Home FAQ accordion and fade-in
+    (function () {
+        document.querySelectorAll('[data-home-faq]').forEach(function (accordion) {
+            var items = accordion.querySelectorAll('.home-faq-item');
+            items.forEach(function (item) {
+                var trigger = item.querySelector('.home-faq-trigger');
+                trigger.addEventListener('click', function () {
+                    items.forEach(function (other) {
+                        var isActive = other === item;
+                        other.classList.toggle('is-open', isActive);
+                        other.querySelector('.home-faq-trigger').setAttribute('aria-expanded', isActive ? 'true' : 'false');
+                    });
+                });
+            });
+        });
+
+        var faqEls = document.querySelectorAll('.home-faq--fade');
+        if (!faqEls.length) return;
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.14 });
+        faqEls.forEach(function (el) { observer.observe(el); });
+    })();
+
+    // Testimonial stats counter animation
+    (function () {
+        var statsEl = document.querySelector('.testimonials-stats');
+        if (!statsEl) return;
+        var animated = false;
+        var observer = new IntersectionObserver(function (entries) {
+            if (entries[0].isIntersecting && !animated) {
+                animated = true;
+                statsEl.querySelectorAll('[data-counter]').forEach(function (el) {
+                    var raw = el.dataset.counter;
+                    var num = parseFloat(raw.replace(/[^0-9.]/g, ''));
+                    var suffix = raw.replace(/[0-9.]/g, '');
+                    if (isNaN(num)) return;
+                    var start = performance.now();
+                    var duration = 1800;
+                    (function tick(now) {
+                        var progress = Math.min((now - start) / duration, 1);
+                        var eased = 1 - Math.pow(1 - progress, 3);
+                        el.textContent = Math.round(num * eased) + suffix;
+                        if (progress < 1) requestAnimationFrame(tick);
+                    })(start);
+                });
+                observer.disconnect();
+            }
+        }, { threshold: 0.3 });
+        observer.observe(statsEl);
+    })();
+
+    document.querySelectorAll('.packages-track').forEach(function(track) {
+        var isDown = false;
+        var startX;
+        var scrollLeft;
+
+        track.addEventListener('mousedown', function(e) {
+            isDown = true;
+            track.classList.add('is-dragging');
+            startX = e.pageX - track.offsetLeft;
+            scrollLeft = track.scrollLeft;
+        });
+
+        track.addEventListener('mouseleave', function() {
+            isDown = false;
+            track.classList.remove('is-dragging');
+        });
+
+        track.addEventListener('mouseup', function() {
+            isDown = false;
+            track.classList.remove('is-dragging');
+        });
+
+        track.addEventListener('mousemove', function(e) {
+            if (!isDown) return;
+            e.preventDefault();
+            var x = e.pageX - track.offsetLeft;
+            var walk = (x - startX) * 1.5;
+            track.scrollLeft = scrollLeft - walk;
+        });
+    });
+</script>
 {% endblock %}

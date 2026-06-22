@@ -85,6 +85,9 @@ class SiteSettings(BaseSiteSetting):
     phone = models.CharField(max_length=50, blank=True)
     address = models.TextField(blank=True)
 
+    company_description = models.TextField(blank=True)
+    company_tagline = models.CharField(max_length=200, blank=True)
+
     instagram = models.URLField(blank=True)
     tiktok = models.URLField(blank=True)
     youtube = models.URLField(blank=True)
@@ -92,6 +95,9 @@ class SiteSettings(BaseSiteSetting):
         blank=True,
         help_text="Use a full URL, for example https://wa.me/6281234567890",
     )
+    facebook_url = models.URLField(blank=True)
+    linkedin_url = models.URLField(blank=True)
+    twitter_url = models.URLField(blank=True)
 
     panels = [
         MultiFieldPanel(
@@ -99,6 +105,8 @@ class SiteSettings(BaseSiteSetting):
                 FieldPanel("site_name"),
                 FieldPanel("logo"),
                 FieldPanel("favicon"),
+                FieldPanel("company_description"),
+                FieldPanel("company_tagline"),
             ],
             heading="Branding",
         ),
@@ -116,6 +124,9 @@ class SiteSettings(BaseSiteSetting):
                 FieldPanel("tiktok"),
                 FieldPanel("youtube"),
                 FieldPanel("whatsapp"),
+                FieldPanel("facebook_url"),
+                FieldPanel("linkedin_url"),
+                FieldPanel("twitter_url"),
             ],
             heading="Social links",
         ),

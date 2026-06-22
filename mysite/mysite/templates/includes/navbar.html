@@ -12,16 +12,7 @@
             {% endif %}
         </a>
 
-        <!-- HAMBURGER -->
-        <button
-            class="menu-toggle"
-            @click="open = !open"
-            type="button"
-        >
-            ☰
-        </button>
-
-        <!-- MENU -->
+        <!-- MENU LINKS (tengah) -->
         <ul
             class="nav-links"
             :class="{ 'active': open }"
@@ -45,7 +36,28 @@
                     {% endif %}
                 </li>
             {% endfor %}
+
+            <!-- Contact Us di dalam mobile menu -->
+            <li class="nav-links-cta">
+                <a href="/contact/">Contact Us</a>
+            </li>
         </ul>
+
+        <!-- CONTACT US (desktop) -->
+        <div class="nav-actions">
+            <a href="/contact/" class="nav-cta">Contact Us</a>
+        </div>
+
+        <!-- HAMBURGER (mobile only) -->
+        <button
+            class="menu-toggle"
+            @click="open = !open"
+            type="button"
+            aria-label="Toggle menu"
+        >
+            <span x-show="!open">☰</span>
+            <span x-show="open">✕</span>
+        </button>
 
     </div>
 </nav>

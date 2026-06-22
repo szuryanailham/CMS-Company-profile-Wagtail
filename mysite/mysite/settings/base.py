@@ -26,6 +26,8 @@ BASE_DIR = PROJECT_DIR.parent
 INSTALLED_APPS = [
     "blog",
     "home",
+    "testimonials",
+    "question_and_answer",
     "navigation.apps.NavigationConfig",
     "search",
     "wagtail.contrib.settings",

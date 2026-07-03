@@ -1,0 +1,352 @@
+/* =============================================
+   Service Page Styles
+   ============================================= */
+
+/* ---- Base ---- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: #1a1a2e;
+    line-height: 1.6;
+    background-color: #ffffff;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ---- Container ---- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ---- Button ---- */
+.button {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: #4f46e5;
+    color: #ffffff;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.button:hover {
+    background-color: #4338ca;
+    transform: translateY(-2px);
+}
+
+/* =============================================
+   Hero Section
+   ============================================= */
+.hero {
+    position: relative;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+    background-color: #1a1a2e;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 100px 0;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(10, 10, 30, 0.55) 0%,
+        rgba(10, 10, 30, 0.75) 100%
+    );
+    z-index: 1;
+}
+
+.hero .container {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    max-width: 760px;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #ffffff;
+}
+
+.hero-subtitle {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #a5b4fc;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.hero-description {
+    font-size: 1.0625rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.75;
+}
+
+.hero-description p {
+    margin-bottom: 12px;
+}
+
+/* =============================================
+   Introduction Section
+   ============================================= */
+.introduction {
+    padding: 80px 0;
+    background-color: #ffffff;
+}
+
+.introduction .container {
+    max-width: 800px;
+}
+
+.introduction-content {
+    font-size: 1.0625rem;
+    color: #374151;
+    line-height: 1.8;
+}
+
+.introduction-content p {
+    margin-bottom: 16px;
+}
+
+/* =============================================
+   Showcase Section
+   ============================================= */
+.showcase {
+    padding: 80px 0;
+    background-color: #f8faff;
+}
+
+.showcase-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.showcase-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+/* Alternate image position every other item */
+.showcase-item:nth-child(even) {
+    direction: rtl;
+}
+
+.showcase-item:nth-child(even) > * {
+    direction: ltr;
+}
+
+.showcase-image img {
+    width: 100%;
+    object-fit: cover;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.showcase-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.showcase-subtitle {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6366f1;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.showcase-content h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.3;
+}
+
+.showcase-description {
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.75;
+}
+
+.showcase-description p {
+    margin-bottom: 12px;
+}
+
+/* ---- Showcase Values List ---- */
+.showcase-values {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.showcase-values li {
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border-left: 3px solid #6366f1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.showcase-values li h4 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+}
+
+.showcase-values li p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* =============================================
+   CTA Section
+   ============================================= */
+.cta {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    text-align: center;
+}
+
+.cta .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    max-width: 680px;
+}
+
+.cta h2 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.3;
+}
+
+.cta-description {
+    font-size: 1.0625rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.75;
+}
+
+.cta-description p {
+    margin-bottom: 8px;
+}
+
+.cta .button {
+    background-color: #ffffff;
+    color: #4f46e5;
+    font-size: 1rem;
+    padding: 16px 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cta .button:hover {
+    background-color: #f0f4ff;
+    transform: translateY(-2px);
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+@media (max-width: 768px) {
+    .hero {
+        min-height: 440px;
+        padding: 80px 0;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .showcase-item {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .showcase-item:nth-child(even) {
+        direction: ltr;
+    }
+
+    .showcase-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .cta h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .hero {
+        min-height: 380px;
+        padding: 60px 0;
+    }
+
+    .introduction,
+    .showcase {
+        padding: 60px 0;
+    }
+
+    .cta {
+        padding: 72px 0;
+    }
+
+    .hero-title {
+        font-size: 1.75rem;
+    }
+
+    .button {
+        width: 100%;
+        text-align: center;
+    }
+}

@@ -1,183 +1,164 @@
 from django.db import models
-from django.core.paginator import Paginator
-
+from wagtail.admin.panels import FieldPanel
+from wagtail.images import get_image_model_string
 from wagtail.models import Page
-from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.snippets.models import register_snippet
 
 
-RATING_CHOICES = [
-    (1, '1 - Poor'),
-    (2, '2 - Fair'),
-    (3, '3 - Good'),
-    (4, '4 - Very Good'),
-    (5, '5 - Excellent'),
-]
-
-STATUS_CHOICES = [
-    ('pending', 'Pending Review'),
-    ('approved', 'Approved'),
-    ('rejected', 'Rejected'),
-]
-
-
+@register_snippet
 class Testimonial(models.Model):
-    full_name = models.CharField(max_length=200)
-    position = models.CharField(max_length=200, blank=True)
-    company = models.CharField(max_length=200, blank=True)
-    location = models.CharField(max_length=200, blank=True)
-    profile_photo = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
+    RATING_CHOICES = [
+        (1, "⭐"),
+        (2, "⭐⭐"),
+        (3, "⭐⭐⭐"),
+        (4, "⭐⭐⭐⭐"),
+        (5, "⭐⭐⭐⭐⭐"),
+    ]
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Client Name"
+    )
+
+    company = models.CharField(
+        max_length=150,
         blank=True,
+        verbose_name="Company"
+    )
+
+    position = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Position"
+    )
+
+    email = models.EmailField(
+        blank=True
+    )
+
+    photo = models.ForeignKey(
+        get_image_model_string(),
         on_delete=models.SET_NULL,
-        related_name='+',
-        help_text='Set by admin via Wagtail image chooser',
-    )
-    submitted_photo = models.ImageField(
-        upload_to='testimonials/submitted/',
         null=True,
         blank=True,
-        help_text='Photo uploaded via public submission form',
+        related_name="+"
     )
-    message = models.TextField()
+
+    project_name = models.CharField(
+        max_length=150,
+        blank=True,
+        verbose_name="Project Name"
+    )
+
+    website = models.URLField(
+        blank=True,
+        verbose_name="Website"
+    )
+
     rating = models.PositiveSmallIntegerField(
         choices=RATING_CHOICES,
-        null=True,
-        blank=True,
+        default=5
     )
-    is_featured = models.BooleanField(
+
+    testimonial = models.TextField(
+        verbose_name="Testimonial"
+    )
+
+    featured = models.BooleanField(
         default=False,
-        help_text='Mark to display on the Home Page testimonials section',
+        help_text="Display this testimonial in the featured section."
     )
-    display_order = models.PositiveIntegerField(
-        default=0,
-        help_text='Lower number appears first',
+
+    published = models.BooleanField(
+        default=False,
+        help_text="Display this testimonial on the website."
     )
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='pending',
+
+    consent_to_publish = models.BooleanField(
+        default=False,
+        verbose_name="Consent to Publish",
+        help_text="Client has given permission to publish this testimonial."
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
 
     panels = [
-        MultiFieldPanel([
-            FieldPanel('full_name'),
-            FieldPanel('position'),
-            FieldPanel('company'),
-            FieldPanel('location'),
-        ], heading='Author Info'),
-        MultiFieldPanel([
-            FieldPanel('profile_photo'),
-            FieldPanel('submitted_photo'),
-        ], heading='Profile Photo'),
-        FieldPanel('message'),
-        MultiFieldPanel([
-            FieldPanel('rating'),
-            FieldPanel('is_featured'),
-            FieldPanel('display_order'),
-            FieldPanel('status'),
-        ], heading='Settings'),
+        FieldPanel("name"),
+        FieldPanel("company"),
+        FieldPanel("position"),
+        FieldPanel("email"),
+        FieldPanel("photo"),
+        FieldPanel("project_name"),
+        FieldPanel("website"),
+        FieldPanel("rating"),
+        FieldPanel("testimonial"),
+        FieldPanel("consent_to_publish"),
+        FieldPanel("featured"),
+        FieldPanel("published"),
     ]
 
     class Meta:
-        ordering = ['display_order', '-created_at']
-        verbose_name = 'Testimonial'
-        verbose_name_plural = 'Testimonials'
+        ordering = ["-created_at"]
+        verbose_name = "Testimonial"
+        verbose_name_plural = "Testimonials"
 
     def __str__(self):
-        return f'{self.full_name} ({self.get_status_display()})'
-
-    @property
-    def display_position(self):
-        parts = [p for p in [self.position, self.company] if p]
-        return ' · '.join(parts)
-
-    @property
-    def avatar_initial(self):
-        return self.full_name[0].upper() if self.full_name else '?'
+        if self.company:
+            return f"{self.name} ({self.company})"
+        return self.name
 
 
 class TestimonialsPage(Page):
-    intro = RichTextField(blank=True)
+    hero_title = models.CharField(
+        max_length=255,
+        default="What Our Clients Say"
+    )
+
+    hero_description = models.TextField(
+        blank=True,
+        help_text="Short description displayed below the hero title."
+    )
+
+    cta_title = models.CharField(
+        max_length=255,
+        blank=True,
+        default="Share Your Experience"
+    )
+
+    cta_description = models.TextField(
+        blank=True
+    )
 
     content_panels = Page.content_panels + [
-        FieldPanel('intro'),
+        FieldPanel("hero_title"),
+        FieldPanel("hero_description"),
+        FieldPanel("cta_title"),
+        FieldPanel("cta_description"),
     ]
-
-    subpage_types = []
-    parent_page_types = ['wagtailcore.Page', 'home.HomePage']
 
     def get_context(self, request):
         context = super().get_context(request)
 
-        testimonials = Testimonial.objects.filter(status='approved').order_by('display_order', '-created_at')
+        context["featured_testimonial"] = (
+            Testimonial.objects.filter(
+                published=True,
+                featured=True,
+            ).first()
+        )
 
-        query = request.GET.get('q', '').strip()
-        if query:
-            testimonials = testimonials.filter(
-                models.Q(full_name__icontains=query)
-                | models.Q(company__icontains=query)
-                | models.Q(message__icontains=query)
-            )
+        context["testimonials"] = (
+            Testimonial.objects.filter(
+                published=True
+            ).order_by("-created_at")
+        )
 
-        rating_filter = request.GET.get('rating', '').strip()
-        if rating_filter.isdigit() and 1 <= int(rating_filter) <= 5:
-            testimonials = testimonials.filter(rating=int(rating_filter))
-
-        paginator = Paginator(testimonials, 10)
-        page_num = request.GET.get('page', 1)
-        page_obj = paginator.get_page(page_num)
-
-        context.update({
-            'testimonials': page_obj,
-            'query': query,
-            'rating_filter': rating_filter,
-            'rating_choices': range(1, 6),
-            'total_count': paginator.count,
-        })
         return context
 
-
-class SubmitTestimonialPage(Page):
-    success_message = models.TextField(
-        default=(
-            'Terima kasih atas testimonial Anda! '
-            'Testimonial Anda sedang dalam proses review dan akan segera ditampilkan setelah disetujui.'
-        ),
-    )
-
-    content_panels = Page.content_panels + [
-        FieldPanel('success_message'),
-    ]
-
-    subpage_types = []
-    parent_page_types = ['wagtailcore.Page', 'home.HomePage']
-
-    def serve(self, request):
-        from django.shortcuts import render, redirect
-        from testimonials.forms import TestimonialSubmitForm
-
-        if request.method == 'POST':
-            form = TestimonialSubmitForm(request.POST, request.FILES)
-            if form.is_valid():
-                rating_val = form.cleaned_data.get('rating')
-                Testimonial.objects.create(
-                    full_name=form.cleaned_data['full_name'],
-                    position=form.cleaned_data.get('position', ''),
-                    company=form.cleaned_data.get('company', ''),
-                    location=form.cleaned_data.get('location', ''),
-                    submitted_photo=form.cleaned_data.get('submitted_photo'),
-                    rating=int(rating_val) if rating_val else None,
-                    message=form.cleaned_data['message'],
-                    status='pending',
-                )
-                return redirect(self.url + '?submitted=true')
-        else:
-            form = TestimonialSubmitForm()
-
-        context = self.get_context(request)
-        context['form'] = form
-        context['submitted'] = request.GET.get('submitted') == 'true'
-        return render(request, self.get_template(request), context)
+    class Meta:
+        verbose_name = "Testimonials Page"

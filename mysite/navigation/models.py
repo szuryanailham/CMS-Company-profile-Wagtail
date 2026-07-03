@@ -50,9 +50,11 @@ class MenuItem(models.Model):
         ordering = ["sort_order"]
 
     def get_link(self):
+        if self.url:
+            return self.url
         if self.page:
             return self.page.url
-        return self.url
+        return "#"
 
     def __str__(self):
         return self.title

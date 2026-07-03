@@ -1,6 +1,6 @@
 {% load wagtailimages_tags %}
 
-<nav class="navbar" x-data="{ open: false }">
+<nav class="navbar" x-data="{ open: false, activeDropdown: null }">
     <div class="navbar-container">
 
         <!-- LOGO -->
@@ -18,13 +18,19 @@
             :class="{ 'active': open }"
         >
             {% for item in menu_items %}
-                <li>
-                    <a href="{{ item.get_link }}">
-                        {{ item.title }}
-                    </a>
+                {% if item.children.all %}
+                  <li
+                        :class="{ 'dropdown-open': activeDropdown === {{ forloop.counter0 }} }"
+                        @click.outside="activeDropdown = null"
+                    >
+                        <a
+                            href="#"
+                            @click.prevent="activeDropdown = (activeDropdown === {{ forloop.counter0 }} ? null : {{ forloop.counter0 }})"
+                        >
+                            {{ item.title }}
+                        </a>
 
-                    {% if item.children.all %}
-                        <ul class="dropdown">
+                        <ul class="dropdown" x-show="activeDropdown === {{ forloop.counter0 }}" x-cloak>
                             {% for child in item.children.all %}
                                 <li>
                                     <a href="{{ child.get_link }}">
@@ -33,8 +39,14 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                    {% endif %}
-                </li>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ item.get_link }}">
+                            {{ item.title }}
+                        </a>
+                    </li>
+                {% endif %}
             {% endfor %}
 
             <!-- Contact Us di dalam mobile menu -->
@@ -51,7 +63,7 @@
         <!-- HAMBURGER (mobile only) -->
         <button
             class="menu-toggle"
-            @click="open = !open"
+            @click="open = !open; activeDropdown = null"
             type="button"
             aria-label="Toggle menu"
         >

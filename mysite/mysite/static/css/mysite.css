@@ -138,9 +138,11 @@ body {
 /* ========================================
    DROPDOWN
 ======================================== */
-.dropdown {
-    display: none;
+[x-cloak] {
+    display: none !important;
+}
 
+.dropdown {
     position: absolute;
     top: 100%;
     left: 0;
@@ -158,17 +160,16 @@ body {
     box-shadow: 0 18px 45px rgba(31, 41, 55, 0.12);
 }
 
-.nav-links li:hover > .dropdown,
-.nav-links li:focus-within > .dropdown {
-    display: block;
-}
-
 .dropdown a {
     display: block;
 
     padding: 10px 18px;
 
     white-space: nowrap;
+}
+
+.nav-links li.dropdown-open > a {
+    color: #3e54a3;
 }
 
 /* ========================================

@@ -156,7 +156,7 @@ class HomePage(Page):
     showcase_label = models.CharField(
         max_length=100,
         blank=True,
-        default='OUR SERVICES',
+  
     )
     showcase_title = models.CharField(
         max_length=255,
@@ -172,7 +172,6 @@ class HomePage(Page):
     packages_label = models.CharField(
         max_length=100,
         blank=True,
-        default='OUR SERVICES',
     )
     packages_title = models.CharField(
         max_length=255,
@@ -195,61 +194,6 @@ class HomePage(Page):
         default='',
     )
 
-    # --- Testimonials Section ---
-    testimonials_label = models.CharField(
-        max_length=100,
-        blank=True,
-        default='TESTIMONIALS',
-    )
-    testimonials_title = models.CharField(
-        max_length=255,
-        blank=True,
-        default='What Our Clients Say',
-    )
-    testimonials_subtitle = models.TextField(
-        blank=True,
-        default='Hear from businesses and organizations that have trusted us to bring their ideas to life.',
-    )
-    testimonials_stat_1_value = models.CharField(
-        max_length=20,
-        blank=True,
-        default='500+',
-    )
-    testimonials_stat_1_label = models.CharField(
-        max_length=100,
-        blank=True,
-        default='Happy Clients',
-    )
-    testimonials_stat_2_value = models.CharField(
-        max_length=20,
-        blank=True,
-        default='98%',
-    )
-    testimonials_stat_2_label = models.CharField(
-        max_length=100,
-        blank=True,
-        default='Client Satisfaction',
-    )
-    testimonials_stat_3_value = models.CharField(
-        max_length=20,
-        blank=True,
-        default='150+',
-    )
-    testimonials_stat_3_label = models.CharField(
-        max_length=100,
-        blank=True,
-        default='Projects Delivered',
-    )
-    testimonials_stat_4_value = models.CharField(
-        max_length=20,
-        blank=True,
-        default='50+',
-    )
-    testimonials_stat_4_label = models.CharField(
-        max_length=100,
-        blank=True,
-        default='Long-Term Partnerships',
-    )
 
     # --- Video Section ---
     video_section_label = models.CharField(
@@ -323,23 +267,7 @@ class HomePage(Page):
         InlinePanel('client_logos', label='Client Logos'),
     ]
 
-    testimonials_panels = [
-        MultiFieldPanel([
-            FieldPanel('testimonials_label'),
-            FieldPanel('testimonials_title'),
-            FieldPanel('testimonials_subtitle'),
-        ], heading='Section Header'),
-        MultiFieldPanel([
-            FieldPanel('testimonials_stat_1_value'),
-            FieldPanel('testimonials_stat_1_label'),
-            FieldPanel('testimonials_stat_2_value'),
-            FieldPanel('testimonials_stat_2_label'),
-            FieldPanel('testimonials_stat_3_value'),
-            FieldPanel('testimonials_stat_3_label'),
-            FieldPanel('testimonials_stat_4_value'),
-            FieldPanel('testimonials_stat_4_label'),
-        ], heading='Statistics (Optional — leave blank to hide)'),
-    ]
+
 
     edit_handler = TabbedInterface([
         ObjectList(Page.content_panels, heading='Page Settings'),
@@ -348,23 +276,20 @@ class HomePage(Page):
         ObjectList(video_panels, heading='Video Section'),
         ObjectList(clients_panels, heading='Client Logos'),
         ObjectList(packages_panels, heading='Service Packages'),
-        ObjectList(testimonials_panels, heading='Testimonials'),
         ObjectList(Page.promote_panels, heading='SEO & Promote'),
     ])
 
     def get_context(self, request):
         context = super().get_context(request)
-        from testimonials.models import Testimonial
+    
         from question_and_answer.models import QuestionAndAnswer
 
-        context['featured_testimonials'] = list(
-            Testimonial.objects
-            .filter(status='approved', is_featured=True)
-            .order_by('display_order')[:5]
-        )
         context['home_faqs'] = list(
             QuestionAndAnswer.objects
             .filter(status='approved', show_on_home=True)
             .order_by('-featured', 'display_order', '-created_at')[:8]
         )
         return context
+
+def delete(self, *args, **kwargs):
+        raise PermissionError("HomePage tidak boleh dihapus.")

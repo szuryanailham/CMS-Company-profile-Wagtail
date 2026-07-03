@@ -26,6 +26,7 @@ BASE_DIR = PROJECT_DIR.parent
 INSTALLED_APPS = [
     "blog",
     "home",
+    "services",
     "testimonials",
     "question_and_answer",
     "navigation.apps.NavigationConfig",

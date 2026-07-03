@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailimages_tags wagtailcore_tags %}
+{% load static wagtailcore_tags wagtailimages_tags %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'testimonials/css/testimonials.css' %}">
@@ -7,114 +7,193 @@
 
 {% block content %}
 
-<section class="tpage-hero">
-    <div class="container">
-        <span class="section-label">TESTIMONIALS</span>
-        <h1 class="tpage-title">{{ page.title }}</h1>
-        {% if page.intro %}
-            <div class="tpage-intro">{{ page.intro|richtext }}</div>
+<!-- Hero -->
+<section class="tst-hero">
+    <div class="container tst-hero-wrapper">
+        <span class="tst-eyebrow">Testimonials</span>
+        <h1 class="tst-hero-title">{{ page.hero_title }}</h1>
+        {% if page.hero_description %}
+            <p class="tst-hero-subtitle">{{ page.hero_description }}</p>
         {% endif %}
     </div>
 </section>
 
-<section class="tpage-section">
+<!-- Featured Testimonial -->
+{% if featured_testimonial %}
+<section class="tst-featured-section">
+    <div class="container">
+        <div class="tst-featured-card">
+            <svg class="tst-quote-icon" viewBox="0 0 32 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9.6 24C6.93333 24 4.73333 23.0667 3 21.2C1.26667 19.3333 0.4 16.9333 0.4 14C0.4 10.9333 1.33333 8.06667 3.2 5.4C5.06667 2.73333 7.6 0.933333 10.8 0L13.2 4C11.0667 4.8 9.33333 5.93333 8 7.4C6.66667 8.86667 6 10.4 6 12C6.53333 11.7333 7.13333 11.6 7.8 11.6C9.53333 11.6 10.9667 12.1667 12.1 13.3C13.2333 14.4333 13.8 15.8667 13.8 17.6C13.8 19.3333 13.1667 20.8 11.9 22C10.6333 23.3333 9.2 24 9.6 24ZM25.6 24C22.9333 24 20.7333 23.0667 19 21.2C17.2667 19.3333 16.4 16.9333 16.4 14C16.4 10.9333 17.3333 8.06667 19.2 5.4C21.0667 2.73333 23.6 0.933333 26.8 0L29.2 4C27.0667 4.8 25.3333 5.93333 24 7.4C22.6667 8.86667 22 10.4 22 12C22.5333 11.7333 23.1333 11.6 23.8 11.6C25.5333 11.6 26.9667 12.1667 28.1 13.3C29.2333 14.4333 29.8 15.8667 29.8 17.6C29.8 19.3333 29.1667 20.8 27.9 22C26.6333 23.3333 25.2 24 25.6 24Z" fill="currentColor"/>
+            </svg>
+
+            <div class="tst-stars tst-stars--light" aria-hidden="true">★★★★★</div>
+
+            <blockquote class="tst-featured-quote">
+                "{{ featured_testimonial.testimonial }}"
+            </blockquote>
+
+            <div class="tst-person">
+                {% if featured_testimonial.photo %}
+                    {% image featured_testimonial.photo fill-72x72 class="tst-avatar" %}
+                {% else %}
+                    <div class="tst-avatar tst-avatar--fallback">{{ featured_testimonial.name|slice:":1" }}</div>
+                {% endif %}
+
+                <div class="tst-person-info">
+                    <h3 class="tst-person-name">{{ featured_testimonial.name }}</h3>
+                    {% if featured_testimonial.position or featured_testimonial.company %}
+                        <p class="tst-person-role">
+                            {{ featured_testimonial.position }}{% if featured_testimonial.position and featured_testimonial.company %}, {% endif %}{{ featured_testimonial.company }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Testimonials Grid -->
+<section class="tst-grid-section">
     <div class="container">
 
         {% if testimonials %}
-        <div class="tpage-grid">
-            {% for t in testimonials %}
-            <article class="testimonial-card">
+        <div class="tst-filter-bar" data-tst-filter>
+            <button type="button" class="tst-filter-chip is-active" data-rating="all">All</button>
+            <button type="button" class="tst-filter-chip" data-rating="5">★ 5</button>
+            <button type="button" class="tst-filter-chip" data-rating="4">★ 4</button>
+            <button type="button" class="tst-filter-chip" data-rating="3">★ 3 &amp; below</button>
+        </div>
+        {% endif %}
 
-                <div class="testimonial-quote-icon" aria-hidden="true">
-                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 8C6.69 8 4 10.69 4 14v10h10V14H7c0-1.66 1.34-3 3-3V8zm14 0c-3.31 0-6 2.69-6 6v10h10V14h-7c0-1.66 1.34-3 3-3V8z" fill="currentColor"/>
+        <div class="tst-grid">
+            {% for testimonial in testimonials %}
+                <div class="tst-card tst-card--fade" data-rating="{{ testimonial.rating }}" data-tst-delay="{{ forloop.counter0 }}">
+
+                    <svg class="tst-card-quote" viewBox="0 0 32 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.6 24C6.93333 24 4.73333 23.0667 3 21.2C1.26667 19.3333 0.4 16.9333 0.4 14C0.4 10.9333 1.33333 8.06667 3.2 5.4C5.06667 2.73333 7.6 0.933333 10.8 0L13.2 4C11.0667 4.8 9.33333 5.93333 8 7.4C6.66667 8.86667 6 10.4 6 12C6.53333 11.7333 7.13333 11.6 7.8 11.6C9.53333 11.6 10.9667 12.1667 12.1 13.3C13.2333 14.4333 13.8 15.8667 13.8 17.6C13.8 19.3333 13.1667 20.8 11.9 22C10.6333 23.3333 9.2 24 9.6 24ZM25.6 24C22.9333 24 20.7333 23.0667 19 21.2C17.2667 19.3333 16.4 16.9333 16.4 14C16.4 10.9333 17.3333 8.06667 19.2 5.4C21.0667 2.73333 23.6 0.933333 26.8 0L29.2 4C27.0667 4.8 25.3333 5.93333 24 7.4C22.6667 8.86667 22 10.4 22 12C22.5333 11.7333 23.1333 11.6 23.8 11.6C25.5333 11.6 26.9667 12.1667 28.1 13.3C29.2333 14.4333 29.8 15.8667 29.8 17.6C29.8 19.3333 29.1667 20.8 27.9 22C26.6333 23.3333 25.2 24 25.6 24Z" fill="currentColor"/>
                     </svg>
-                </div>
 
-                <p class="testimonial-message">{{ t.message }}</p>
-
-                {% if t.rating %}
-                <div class="testimonial-stars" aria-label="{{ t.rating }} out of 5 stars">
-                    {% for i in "12345" %}
-                    <span class="star {% if forloop.counter <= t.rating %}filled{% endif %}" aria-hidden="true">★</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                <div class="testimonial-author-row">
-                    {% if t.profile_photo %}
-                        {% image t.profile_photo fill-80x80 class="testimonial-avatar" alt=t.full_name %}
-                    {% elif t.submitted_photo %}
-                        <img src="{{ t.submitted_photo.url }}" class="testimonial-avatar" alt="{{ t.full_name }}">
-                    {% else %}
-                        <div class="testimonial-avatar-letter" aria-hidden="true">{{ t.avatar_initial }}</div>
-                    {% endif %}
-
-                    <div class="testimonial-author-info">
-                        <strong class="testimonial-name">{{ t.full_name }}</strong>
-                        {% if t.display_position %}
-                        <span class="testimonial-position">{{ t.display_position }}</span>
+                    <div class="tst-card-header">
+                        {% if testimonial.photo %}
+                            {% image testimonial.photo fill-56x56 class="tst-avatar tst-avatar--sm" %}
+                        {% else %}
+                            <div class="tst-avatar tst-avatar--sm tst-avatar--fallback">{{ testimonial.name|slice:":1" }}</div>
                         {% endif %}
-                        {% if t.location %}
-                        <span class="testimonial-location">
-                            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                <path d="M10 2C7.24 2 5 4.24 5 7c0 4.25 5 11 5 11s5-6.75 5-11c0-2.76-2.24-5-5-5zm0 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/>
-                            </svg>
-                            {{ t.location }}
-                        </span>
-                        {% endif %}
+
+                        <div class="tst-person-info">
+                            <h3 class="tst-person-name">{{ testimonial.name }}</h3>
+                            {% if testimonial.position or testimonial.company %}
+                                <p class="tst-person-role">
+                                    {{ testimonial.position }}{% if testimonial.position and testimonial.company %}, {% endif %}{{ testimonial.company }}
+                                </p>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
 
-            </article>
+                    <div class="tst-stars" aria-hidden="true">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= testimonial.rating %}<span class="tst-star tst-star--filled">★</span>{% else %}<span class="tst-star">☆</span>{% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <p class="tst-card-text" data-tst-clamp>"{{ testimonial.testimonial }}"</p>
+                    <button type="button" class="tst-read-more" data-tst-toggle hidden>Read more</button>
+
+                    {% if testimonial.website %}
+                        <a href="{{ testimonial.website }}" class="tst-card-link" target="_blank" rel="noopener">
+                            Visit project ↗
+                        </a>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="tst-empty">
+                    <h2>No testimonials yet.</h2>
+                    <p>Be the first to share your experience.</p>
+                </div>
             {% endfor %}
         </div>
 
-        {% if testimonials.has_other_pages %}
-        <nav class="tpage-pagination" aria-label="Pagination">
-            {% if testimonials.has_previous %}
-            <a href="?page={{ testimonials.previous_page_number }}" class="tpagination-btn" aria-label="Previous page">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Previous
-            </a>
-            {% endif %}
-
-            <span class="tpagination-info">
-                Page {{ testimonials.number }} of {{ testimonials.paginator.num_pages }}
-            </span>
-
-            {% if testimonials.has_next %}
-            <a href="?page={{ testimonials.next_page_number }}" class="tpagination-btn" aria-label="Next page">
-                Next
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </a>
-            {% endif %}
-        </nav>
-        {% endif %}
-
-        {% else %}
-        <div class="tpage-empty">
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                <circle cx="24" cy="24" r="22" stroke="#e2e8f0" stroke-width="2"/>
-                <path d="M16 20C14.34 20 13 21.34 13 23v8h8v-8h-5c0-1.66 1.34-3 3-3v-3zm14 0c-1.66 0-3 1.34-3 3v8h8v-8h-5c0-1.66 1.34-3 3-3v-3z" fill="#cbd5e1"/>
-            </svg>
-            <p>Belum ada testimoni yang ditampilkan.</p>
-        </div>
-        {% endif %}
-
+        <p class="tst-empty-filtered" data-tst-empty hidden>No testimonials match this rating yet.</p>
     </div>
 </section>
 
-<section class="tpage-submit-cta">
-    <div class="container">
-        <h2>Share Your Experience</h2>
-        <p>Have you worked with us? We'd love to hear from you.</p>
-        <a href="/submit-testimonial/" class="btn btn-primary">Submit a Testimonial</a>
+<!-- CTA -->
+<section class="tst-cta-section">
+    <div class="container tst-cta-wrapper">
+        <h2 class="tst-cta-title">{{ page.cta_title }}</h2>
+        {% if page.cta_description %}
+            <p class="tst-cta-subtitle">{{ page.cta_description }}</p>
+        {% endif %}
+        <a href="/share-testimonial/" class="tst-btn-cta">Share Your Experience</a>
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        // Fade-in cards on scroll
+        var cards = document.querySelectorAll('.tst-card--fade');
+        if (cards.length) {
+            var fadeObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        fadeObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            cards.forEach(function (card) {
+                var delay = parseInt(card.dataset.tstDelay, 10) || 0;
+                card.style.transitionDelay = (delay * 100) + 'ms';
+                fadeObserver.observe(card);
+            });
+        }
+
+        // Clamp long testimonial text with a "Read more" toggle
+        document.querySelectorAll('[data-tst-clamp]').forEach(function (text) {
+            if (text.scrollHeight > text.clientHeight + 2) {
+                var toggle = text.parentElement.querySelector('[data-tst-toggle]');
+                toggle.hidden = false;
+                toggle.addEventListener('click', function () {
+                    var expanded = text.classList.toggle('is-expanded');
+                    toggle.textContent = expanded ? 'Read less' : 'Read more';
+                });
+            }
+        });
+
+        // Filter grid by rating
+        var filterBar = document.querySelector('[data-tst-filter]');
+        if (filterBar) {
+            var chips = filterBar.querySelectorAll('.tst-filter-chip');
+            var allCards = document.querySelectorAll('.tst-card[data-rating]');
+            var emptyMsg = document.querySelector('[data-tst-empty]');
+
+            chips.forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    chips.forEach(function (c) { c.classList.remove('is-active'); });
+                    chip.classList.add('is-active');
+
+                    var filter = chip.dataset.rating;
+                    var visibleCount = 0;
+
+                    allCards.forEach(function (card) {
+                        var rating = parseInt(card.dataset.rating, 10);
+                        var show = filter === 'all'
+                            || (filter === '5' && rating === 5)
+                            || (filter === '4' && rating === 4)
+                            || (filter === '3' && rating <= 3);
+                        card.style.display = show ? '' : 'none';
+                        if (show) visibleCount++;
+                    });
+
+                    if (emptyMsg) emptyMsg.hidden = visibleCount !== 0;
+                });
+            });
+        }
+    })();
+</script>
 {% endblock %}

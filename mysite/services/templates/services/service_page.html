@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'services/css/service_page.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <!-- Hero Section -->
+    <section class="hero"{% if page.hero_image %} style="background-image: url('{{ page.hero_image.file.url }}');"{% endif %}>
+        <div class="hero-overlay"></div>
+        <div class="container">
+
+            <div class="hero-content">
+
+                <span class="hero-subtitle">
+                    {{ page.hero_subtitle }}
+                </span>
+
+                <h1 class="hero-title">
+                    {{ page.hero_title }}
+                </h1>
+
+                <div class="hero-description">
+                    {{ page.hero_description|richtext }}
+                </div>
+
+                {% if page.cta_button_text %}
+                    <a href="{{ page.cta_button_link }}" class="button">
+                        {{ page.cta_button_text }}
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="introduction">
+        <div class="container">
+
+            <div class="introduction-content">
+                {{ page.introduction|richtext }}
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Showcase -->
+    <section class="showcase">
+
+        <div class="container">
+
+            {% for showcase in page.showcases.all %}
+
+                <article class="showcase-item">
+
+                    <div class="showcase-image">
+
+                        {% if showcase.image %}
+                            <img
+                                src="{{ showcase.image.file.url }}"
+                                alt="{{ showcase.title }}"
+                            >
+                        {% endif %}
+
+                    </div>
+
+                    <div class="showcase-content">
+
+                        <span class="showcase-subtitle">
+                            {{ showcase.subtitle }}
+                        </span>
+
+                        <h2>
+                            {{ showcase.title }}
+                        </h2>
+
+                        <div class="showcase-description">
+                            {{ showcase.description|richtext }}
+                        </div>
+
+                        <ul class="showcase-values">
+
+                            {% for value in showcase.values.all %}
+
+                                <li>
+
+                                    <h4>{{ value.title }}</h4>
+
+                                    <p>{{ value.description }}</p>
+
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                        {% if showcase.button_text %}
+                            <a
+                                href="{{ showcase.button_link }}"
+                                class="button"
+                            >
+                                {{ showcase.button_text }}
+                            </a>
+                        {% endif %}
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+
+        <div class="container">
+
+            <h2>
+                {{ page.cta_title }}
+            </h2>
+
+            <div class="cta-description">
+                {{ page.cta_description|richtext }}
+            </div>
+
+            {% if page.cta_button_text %}
+                <a
+                    href="{{ page.cta_button_link }}"
+                    class="button"
+                >
+                    {{ page.cta_button_text }}
+                </a>
+            {% endif %}
+
+        </div>
+
+    </section>
+
+{% endblock %}

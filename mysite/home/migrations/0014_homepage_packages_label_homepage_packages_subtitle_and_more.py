@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='homepage',
             name='packages_label',
-            field=models.CharField(blank=True, default='OUR SERVICES', max_length=100),
+            field=models.CharField(blank=True, max_length=100),
         ),
         migrations.AddField(
             model_name='homepage',
